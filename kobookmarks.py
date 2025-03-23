@@ -68,6 +68,7 @@ def get_nonpdf_markups(db_file, last_update, markups_folder,
 
 
 def get_pdf_ink_annotations(backup_dir, combined_markups_folder):
+    # FIXME: Doesn't care about last_updated date, gets all annotations
     pdf_paths = []
     for dirpath, _, filenames in backup_dir.walk():
         for fname in filenames:
