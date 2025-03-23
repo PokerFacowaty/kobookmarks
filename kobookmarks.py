@@ -24,7 +24,9 @@ def get_nonpdf_markups(db_file, last_update, markups_folder,
     connection = sqlite3.connect(db_file)
     # connection.text_factory = lambda b: b.decode(errors='ignore')
     cur = connection.cursor()
-    response = cur.execute('SELECT BookmarkID, VolumeID FROM Bookmark WHERE Type = "markup" AND DateModified > ?', last_update)
+    response = cur.execute('SELECT BookmarkID, VolumeID FROM Bookmark'
+                           + 'WHERE Type = "markup" AND DateModified > ?',
+                           last_update)
     non_pdf_bookmark_data = response.fetchall()
     existing = 0
 
