@@ -16,7 +16,7 @@ def main():
 
     get_nonpdf_markups(db_file, last_update, markups_folder,
                        combined_markups_foder)
-    get_pdf_annotations(backup_dir, combined_markups_foder)
+    get_pdf_ink_annotations(backup_dir, combined_markups_foder)
 
 
 def get_nonpdf_markups(db_file, last_update, markups_folder,
