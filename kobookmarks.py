@@ -4,6 +4,7 @@ import subprocess
 import shutil
 import pymupdf
 import sys
+import argparse
 
 
 def main():
@@ -17,6 +18,24 @@ def main():
     get_nonpdf_markups(db_file, last_update, markups_folder,
                        combined_markups_foder)
     get_pdf_ink_annotations(backup_dir, combined_markups_foder)
+
+
+def configure():
+    parser = argparse.ArgumentParser(
+            prog='kobookmarks',
+            description='WIP'  # FIXME
+            )
+
+    # Source is optional and destination is positional because it makes more
+    # sense than any other way to me, maybe I can be convinced otherwise
+    parser.add_argument(['-s', '--source-directory'], action='store_value',
+                        type=Path, default=Path.cwd())
+    parser.add_argument(['DESTINATION_DIRECTORY'], action='store_value')
+    args = parser.parse_args()
+
+    extraction_dir = args.directory
+    if not extraction_dir.is_absolute():
+        extraction_dir = Path.cwd() / extraction_dir
 
 
 def get_nonpdf_markups(db_file, last_update, markups_folder,
