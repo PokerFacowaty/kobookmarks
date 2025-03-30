@@ -5,10 +5,12 @@ import shutil
 import pymupdf
 import sys
 import argparse
+from datetime import datetime
 
 
 def main():
-    backup_dir = Path('/home/pokerfacowaty/kobo backup 23.03.2025')
+    args = configure()
+    backup_dir = args.destination_directory
     dot_kobo_dir = backup_dir / '.kobo'
     db_file = dot_kobo_dir / 'KoboReader.sqlite'
     markups_folder = dot_kobo_dir / 'markups'
@@ -31,11 +33,27 @@ def configure():
     parser.add_argument(['-s', '--source-directory'], action='store_value',
                         type=Path, default=Path.cwd())
     parser.add_argument(['DESTINATION_DIRECTORY'], action='store_value')
+
+    # It should make a full backup by and only be limited by args or config
+    parser.add_argument(['-t', '--types'], action='store_value',
+                        type=types_list)
+    parser.add_argument(['-d', '--starting-date'], action='store_value',
+                        type=datetime.fromisoformat)
+
     args = parser.parse_args()
 
     extraction_dir = args.directory
     if not extraction_dir.is_absolute():
         extraction_dir = Path.cwd() / extraction_dir
+
+    return args
+
+
+def types_list(types_str):
+    allowed_types = ('markup',)
+    for t in types_str.split(','):
+        if t not in allowed_types:
+            raise argparse.ArgumentTypeError("Invalid bookmark type")
 
 
 def get_nonpdf_markups(db_file, last_update, markups_folder,
