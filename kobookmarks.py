@@ -30,14 +30,14 @@ def configure():
 
     # Source is optional and destination is positional because it makes more
     # sense than any other way to me, maybe I can be convinced otherwise
-    parser.add_argument(['-s', '--source-directory'], action='store_value',
+    parser.add_argument(['-s', '--source-directory'], action='store',
                         type=Path, default=Path.cwd())
-    parser.add_argument(['DESTINATION_DIRECTORY'], action='store_value')
+    parser.add_argument(['DESTINATION_DIRECTORY'], action='store')
 
     # It should make a full backup by and only be limited by args or config
-    parser.add_argument(['-t', '--types'], action='store_value',
+    parser.add_argument(['-t', '--types'], action='store',
                         type=types_list)
-    parser.add_argument(['-d', '--starting-date'], action='store_value',
+    parser.add_argument(['-d', '--starting-date'], action='store',
                         type=datetime.fromisoformat)
 
     args = parser.parse_args()
