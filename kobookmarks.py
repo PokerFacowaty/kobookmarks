@@ -108,7 +108,6 @@ def get_nonpdf_markups(db_file, last_update, markups_folder,
                        'error', '-y', '-i', jpg_path, '-i', svg_path,
                        '-filter_complex', "'overlay'", final_markup_path]
         subprocess.Popen(ffmpeg_args)
-    print(existing)
 
 
 def get_pdf_ink_annotations(backup_dir, combined_markups_folder):
@@ -118,7 +117,6 @@ def get_pdf_ink_annotations(backup_dir, combined_markups_folder):
         for fname in filenames:
             if fname.endswith('pdf'):
                 pdf_paths.append(dirpath / fname)
-    print(pdf_paths)
 
     for pdf_path in pdf_paths:
         doc = pymupdf.open(pdf_path)
@@ -130,7 +128,6 @@ def get_pdf_ink_annotations(backup_dir, combined_markups_folder):
             if page.first_annot:
                 pix = page.get_pixmap(matrix=mat)
                 final_markup_dir = combined_markups_folder / pdf_path.stem
-                print(final_markup_dir)
                 Path.mkdir(final_markup_dir, exist_ok=True)
                 pix.save(final_markup_dir / f'{pageNum + 1}.jpg')
 
