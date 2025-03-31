@@ -69,7 +69,7 @@ def get_nonpdf_markups(db_file, last_update, markups_folder,
     connection = sqlite3.connect(db_file)
     # connection.text_factory = lambda b: b.decode(errors='ignore')
     cur = connection.cursor()
-    response = cur.execute('SELECT BookmarkID, VolumeID FROM Bookmark'
+    response = cur.execute('SELECT BookmarkID, VolumeID FROM Bookmark '
                            + 'WHERE Type = "markup" AND DateModified > ?',
                            last_update)
     non_pdf_bookmark_data = response.fetchall()
@@ -83,7 +83,7 @@ def get_nonpdf_markups(db_file, last_update, markups_folder,
         if book_titles.get(book_id, False):
             book_title = book_titles[book_id]
         else:
-            response = cur.execute('SELECT BookTitle FROM content'
+            response = cur.execute('SELECT BookTitle FROM content '
                                    + 'WHERE BookId = ? LIMIT 1', book_id)
             book_title = response.fetchone()[0]
             book_title = book_title.replace('/', '_')
