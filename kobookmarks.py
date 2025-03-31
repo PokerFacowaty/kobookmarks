@@ -3,23 +3,23 @@ from pathlib import Path
 import subprocess
 import shutil
 import pymupdf
-import sys
 import argparse
 from datetime import datetime
 
 
 def main():
     args = configure()
-    backup_dir = args.destination_directory
-    dot_kobo_dir = backup_dir / '.kobo'
+    src_dir = args.source_directory
+    dot_kobo_dir = src_dir / '.kobo'
     db_file = dot_kobo_dir / 'KoboReader.sqlite'
     markups_folder = dot_kobo_dir / 'markups'
-    combined_markups_foder = Path(__file__).parent.resolve() / 'markups_combined'
+
+    dest_dir = args.destination_directory
     last_update = '2025-03-01',
 
     get_nonpdf_markups(db_file, last_update, markups_folder,
-                       combined_markups_foder)
-    get_pdf_ink_annotations(backup_dir, combined_markups_foder)
+                       dest_dir)
+    get_pdf_ink_annotations(src_dir, dest_dir)
 
 
 def configure():
@@ -30,23 +30,31 @@ def configure():
 
     # Source is optional and destination is positional because it makes more
     # sense than any other way to me, maybe I can be convinced otherwise
-    parser.add_argument(['-s', '--source-directory'], action='store',
-                        type=Path, default=Path.cwd())
-    parser.add_argument(['DESTINATION_DIRECTORY'], action='store')
+    parser.add_argument('-s', '--source-directory', action='store',
+                        type=absolute_path, default=Path.cwd())
+    parser.add_argument('destination_directory', action='store',
+                        type=absolute_path)
 
     # It should make a full backup by and only be limited by args or config
-    parser.add_argument(['-t', '--types'], action='store',
+    parser.add_argument('-t', '--types', action='store',
                         type=types_list)
-    parser.add_argument(['-d', '--starting-date'], action='store',
+    parser.add_argument('-d', '--starting-date', action='store',
                         type=datetime.fromisoformat)
 
     args = parser.parse_args()
 
-    extraction_dir = args.directory
-    if not extraction_dir.is_absolute():
-        extraction_dir = Path.cwd() / extraction_dir
-
     return args
+
+
+def absolute_path(path_str):
+    try:
+        p = Path(path_str)
+    except TypeError:
+        raise argparse.ArgumentTypeError('Argument must be a path')
+
+    if not p.is_absolute():
+        return p.expanduser().resolve()
+    return p
 
 
 def types_list(types_str):
