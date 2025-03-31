@@ -69,9 +69,6 @@ def get_nonpdf_markups(db_file, last_update, markups_folder,
 
     book_titles = {}
     for i, _ in enumerate(non_pdf_bookmark_data):
-        # For testing
-        if (sys.argv[1] == 'skipnonpdf'):
-            break
         bookmark_id = non_pdf_bookmark_data[i][0]
         book_id = non_pdf_bookmark_data[i][1],
 
