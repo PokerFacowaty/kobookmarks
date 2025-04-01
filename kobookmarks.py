@@ -15,7 +15,7 @@ def main():
     markups_folder = dot_kobo_dir / 'markups'
 
     dest_dir = args.destination_directory
-    last_update = '2025-03-01',
+    last_update = args.starting_date or None
 
     get_nonpdf_markups(db_file, last_update, markups_folder,
                        dest_dir)
@@ -69,9 +69,14 @@ def get_nonpdf_markups(db_file, last_update, markups_folder,
     connection = sqlite3.connect(db_file)
     # connection.text_factory = lambda b: b.decode(errors='ignore')
     cur = connection.cursor()
-    response = cur.execute('SELECT BookmarkID, VolumeID FROM Bookmark '
-                           + 'WHERE Type = "markup" AND DateModified > ?',
-                           last_update)
+
+    exec_args = ('SELECT BookmarkID, VolumeID FROM Bookmark '
+                 + 'WHERE Type = "markup"',)
+    if last_update:
+        exec_args = (exec_args[0] + 'AND DateModified > ?',
+                     (last_update.isoformat(),))
+
+    response = cur.execute(*exec_args)
     non_pdf_bookmark_data = response.fetchall()
     existing = 0
 
